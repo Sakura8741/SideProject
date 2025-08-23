@@ -1,0 +1,75 @@
+.card {
+    position: relative;
+    overflow: hidden;
+    min-height: 250px;
+    background-color: #f1f1f1;
+    border-bottom: 1px solid #c4c4c4;
+}
+
+/* ç∂ö§âEï∂ */
+.card-image {
+    clip-path: polygon(0 0, 100% 0, 80% 100%, 0% 100%);
+}
+
+    .card-image img {
+        display: block;
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
+
+/* âEë§ï∂éö */
+.card-content {
+    padding: 40px;
+    background-color: #f1f1f1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-bottom: 1px solid #333;
+    align-items: flex-start;
+    text-align: left;
+}
+
+    .card-content h2 {
+        margin-bottom: 10px;
+    }
+
+.card-link {
+    align-items: flex-start;
+    text-align: left;
+    margin-top: 20px;
+    display: inline-block;
+    padding: 10px 15px;
+    border: 1px solid #333;
+    text-decoration: none;
+    color: #333;
+    transition: 0.3s;
+}
+
+    .card-link:hover {
+        background: #333;
+        color: #fff;
+    }
+
+/* ñ|ÁzÅFâEö§ç∂ï∂ */
+.card.reverse {
+    flex-direction: row-reverse;
+}
+
+    .card.reverse .card-image {
+        clip-path: polygon(0% 0, 100% 0, 100% 100%, 20% 100%);
+    }
+    .card.reverse .card-content {
+        align-items: flex-end;
+        text-align: right;
+    }
+
+@media (max-width: 767px) {
+    .card-image {
+        clip-path: none;
+    }
+
+    .card.reverse .card-image {
+        clip-path: none;
+    }
+}
