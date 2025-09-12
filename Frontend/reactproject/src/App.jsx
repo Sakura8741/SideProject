@@ -2,7 +2,10 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import MainHeader from './MainHeader';
 import Mainpage from './Pages/Mainpage/Mainpage';
-import Commodity1 from './Pages/Commodity/Commodity1';
+import Products from './Pages/Products/Products';
+import ProductsDetail from './Pages/Products/ProductsDetail';
+import Signin from './Pages/Signin/Signin';
+import Cart from './Pages/Cart/Cart';
 import { Layout } from 'antd';
 const { Footer } = Layout;
 import './CssReset.css'
@@ -10,14 +13,15 @@ const App = () => {
     return (
         <BrowserRouter>
             <MainHeader />
-            <Routes>
+            <Routes >
                 <Route path="/" element={<Mainpage />} />
-                <Route path="/signin" element={<div>Member Page</div>} />
-                <Route path="/commodity1" element={<Commodity1 />} />
-                <Route path="/commodity2" element={<div>/commodity2</div>} />
+                <Route path="/signin" element={<Signin />} />
+                <Route path=":categoryId" element={<Products />} />
+                <Route path=":categoryId/:productId" element={<ProductsDetail />} />
+                <Route path="/cart" element={<Cart />} />
             </Routes>
             <Footer className='footerStyle'>
-                copyright © 2023 Your Company
+                copyright © 2025 SideProject
             </Footer>
         </BrowserRouter>
     );

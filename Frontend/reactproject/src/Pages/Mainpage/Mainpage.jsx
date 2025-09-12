@@ -4,18 +4,18 @@ import DiagonalCard from './DiagonalCard';
 function Mainpage() {
     return (
 
-        <Content style={{ paddingTop: '60px' }}>
+        <Content style={{ paddingTop: '64px' }}>
             <DiagonalCard
-                img="https://picsum.photos/500/400"
-                title="商品一"
+                img="/images/mainpage/accessories.jpg"
+                title="飾品"
                 text="這是商品一的描述"
-                link="#"
+                link="/accessories"
             />
             <DiagonalCard
-                img="https://picsum.photos/500/400"
-                title="商品二"
+                img="/images/mainpage/perfume.jpg"
+                title="香水"
                 text="這是商品二的描述"
-                link="#"
+                link="/perfume"
                 reverse
             />
         </Content>

@@ -1,24 +1,35 @@
-﻿import { Layout, Button, Input, Typography, Row, Col, Dropdown, Menu } from 'antd';
-import { HomeOutlined, UserOutlined, ShoppingCartOutlined, MenuOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+﻿import { Layout, Button, Input, Typography, Row, Col, Dropdown, Menu, AutoComplete } from 'antd';
+import { UserOutlined, ShoppingCartOutlined, MenuOutlined } from '@ant-design/icons';
+import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import './MainHeader.css';
+import debounce from "lodash.debounce";
 
 const { Search } = Input;
 const { Header } = Layout;
 const { Text } = Typography;
 
 function MainHeader() {
+    const [options, setOptions] = useState([]);
+    const navigate = useNavigate();
+    const [user, setUser] = useState([])
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) setUser(JSON.parse(storedUser));
+    }, []);
+
     // 手機版選單
     const mobileMenu = (
         <Menu>
-            <Menu.Item key="product1">
-                <Button type="text">商品一</Button>
+            <Menu.Item key="jewelry">
+                <Link to="/jewelry">飾品</Link>
             </Menu.Item>
             <Menu.Item key="product2">
-                <Button type="text">商品二</Button>
+                <Link to="/perfume">香水</Link>
             </Menu.Item>
             <Menu.Item key="signin">
-                <Link to="/signin">會員</Link>
+                <Link to="/signin">登入會員</Link>
             </Menu.Item>
             <Menu.Item key="cart">
                 <Link to="/cart">購物車</Link>
@@ -26,30 +37,95 @@ function MainHeader() {
         </Menu>
     );
 
+    const userMenu = (
+        <Menu>
+            <Menu.Item key="logout" >
+                <a onClick={() => { handleLogout() }}>登出會員</a>
+            </Menu.Item>
+        </Menu>
+    );
+
+    const handleLogout = () => {
+        localStorage.removeItem(user);
+        setUser(null);
+        navigate("/")
+    }
+
+    const handleSearch = debounce(async (value) => {
+        if (!value) {
+            setOptions([]);
+            return;
+        }
+
+        try {
+            const res = await fetch(`https://localhost:7207/api/Products/search?keyword=${value}`);
+            const data = await res.json();
+            setOptions(data.map(item => ({
+                value: item.value,
+                productId: item.id,
+                category: item.category,
+            })));
+
+        }
+        catch (error) {
+            console.error("搜尋失敗", error);
+        }
+    }, 500);
+
+    const handleSelect = (value, option) => {
+        navigate(`${option.category}/${option.productId}`);
+        setOptions([]);
+    }
+
     return (
-        <Layout className= "layoutStyle">
+        <Layout >
             <Header className="headerStyle">
                 <Row className="headerRow" justify="space-between" align="middle">
                     {/* Logo */}
                     <Col>
                         <Link to="/" className="logoStyle">
-                            <HomeOutlined />
-                            <Text>首頁</Text>
+                            <Button type="text" className="productButton">首頁</Button>
                         </Link>
                     </Col>
 
                     {/* 桌面版按鈕 */}
                     <Col className="desktopMenu">
-                        <Link to="/commodity1" className="membericonStyle">
-                            <Button type="text">商品一</Button>
+                        <Link to="/jewelry" >
+                            <Button type="text" className="productButton">飾品</Button>
                         </Link>
-                        <Link to="/commodity2" className="membericonStyle">
-                            <Button type="text">商品二</Button>
+                        <Link to="/perfume" >
+                            <Button type="text" className="productButton">香水</Button>
                         </Link>
-                        <Search className="searchStyle" placeholder="搜尋商品" allowClear />
-                        <Link to="/signin" className="membericonStyle">
-                            <UserOutlined />
-                        </Link>
+                        <AutoComplete
+                            options={options}
+                            onSearch={handleSearch}
+                            onSelect={handleSelect}
+                            defaultActiveFirstOption={false}
+                            className='searchStyle'
+                        >
+                            <Input.Search placeholder="搜尋商品" onSearch={(value) => {
+                                handleSearch(value)
+                                handleSelect(value, options[0])
+                                setOptions([])
+                            }} />
+                        </AutoComplete>
+                        {!user ? (
+                            < Link to="/signin" className="membericonStyle" >
+                                <Button className="w-full flex gap-2 p-0 text-[#4CAF93]" type="text">
+                                    <UserOutlined />
+                                    會員登入
+                                </Button>
+                            </Link>
+
+                        ) : (
+                            <Dropdown overlay={userMenu}>
+                                <Text className="w-full flex gap-2">
+                                    <UserOutlined />
+                                    {user.username}
+                                </Text>
+                            </Dropdown>
+                        )}
+
                         <Link to="/cart" className="carticonStyle">
                             <ShoppingCartOutlined />
                         </Link>
@@ -57,7 +133,19 @@ function MainHeader() {
 
                     {/* 手機版折疊選單 */}
                     <Col className="mobileMenu">
-                        <Search className="searchStyle" placeholder="搜尋商品" allowClear />
+                        <AutoComplete
+                            options={options}
+                            onSearch={handleSearch}
+                            onSelect={handleSelect}
+                            defaultActiveFirstOption={false}
+                            className='searchStyle'
+                        >
+                            <Input.Search placeholder="搜尋商品" onSearch={(value) => {
+                                handleSearch(value)
+                                handleSelect(value, options[0])
+                                setOptions([])
+                            }} />
+                        </AutoComplete>
                         <Dropdown overlay={mobileMenu} trigger={['click']}>
                             <Button icon={<MenuOutlined />} />
                         </Dropdown>

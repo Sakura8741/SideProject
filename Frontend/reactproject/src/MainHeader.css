@@ -1,19 +1,22 @@
 ﻿.headerStyle {
     width: 100%;
-    background-color: #f1f1f1;
     padding: 0;
+    background-color: #F9FAFB;
     border-bottom: 1px solid #c4c4c4;
     position: fixed;
     z-index: 1000;
     top: 0;
     left: 0;
+    opacity: 0.95;
 }
 
 .footerStyle {
     padding: 2px 10px;
     text-align: left;
-    color: #000000;
-    background-color: #f1f1f1;
+    background-color: #F9FAFB;
+    width: 100%;
+    border-top: 1px solid #c4c4c4;
+    
 }
 
 .desktopMenu {
@@ -24,7 +27,7 @@
 
 .searchStyle {
     width: 100%;
-    max-width: 300px;
+    min-width: 200px;
 }
 
 .logoStyle {
@@ -32,24 +35,24 @@
     align-items: center;
     padding: 0 10px;
 }
-
-    .logoStyle:hover {
-        color: #000000;
+.headerRow .ant-typography {
+    color: #4CAF93;
+}
+    .headerRow .ant-typography:hover {
+        color: #3BAFDA;
     }
 
-.membericonStyle, .carticonStyle {
-    height: auto;
-    padding: 0px 10px;
-}
 
-.mobileMenu {
-    display: none;
+.membericonStyle, .carticonStyle, .productButton {
+    margin: 0px 10px;
+    color: #4CAF93;
 }
-
+    .ant-btn-variant-text:not(:disabled):not(.ant-btn-disabled):hover {
+        color: #3BAFDA;
+    }
 .headerRow {
     height: 64px;
-}
-
+} 
 @media (max-width: 768px) {
     .desktopMenu {
         display: none;
@@ -63,5 +66,14 @@
         justify-content: flex-end;
         align-items: center;
         height: 64px;
+    }
+}
+@media (min-width: 767px) {
+    .mobileMenu {
+        display: none;
+    }
+
+    .desktopMenu {
+        display: flex;
     }
 }
