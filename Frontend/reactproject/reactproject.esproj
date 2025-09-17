@@ -9,6 +9,9 @@
     <BuildOutputFolder>$(MSBuildProjectDirectory)\dist</BuildOutputFolder>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="UserContext.js" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include=".bin\git.cmd" />
     <None Include=".bin\node.cmd" />
   </ItemGroup>

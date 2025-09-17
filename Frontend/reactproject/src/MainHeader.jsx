@@ -1,7 +1,8 @@
-﻿import { Layout, Button, Input, Typography, Row, Col, Dropdown, Menu, AutoComplete } from 'antd';
+﻿import { Layout, Button, Input, Typography, Row, Col, Dropdown, Menu, AutoComplete, message } from 'antd';
 import { UserOutlined, ShoppingCartOutlined, MenuOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { useUser } from './context/UserContext';
 import './MainHeader.css';
 import debounce from "lodash.debounce";
 
@@ -12,24 +13,16 @@ const { Text } = Typography;
 function MainHeader() {
     const [options, setOptions] = useState([]);
     const navigate = useNavigate();
-    const [user, setUser] = useState([])
-
-    useEffect(() => {
-        const storedUser = localStorage.getItem("user");
-        if (storedUser) setUser(JSON.parse(storedUser));
-    }, []);
-
+    const { user, logout } = useUser();
+    const [messageApi, contextHolder] = message.useMessage();
     // 手機版選單
     const mobileMenu = (
         <Menu>
-            <Menu.Item key="jewelry">
-                <Link to="/jewelry">飾品</Link>
+            <Menu.Item key="accessories">
+                <Link to="/accessories">飾品</Link>
             </Menu.Item>
-            <Menu.Item key="product2">
+            <Menu.Item key="perfume">
                 <Link to="/perfume">香水</Link>
-            </Menu.Item>
-            <Menu.Item key="signin">
-                <Link to="/signin">登入會員</Link>
             </Menu.Item>
             <Menu.Item key="cart">
                 <Link to="/cart">購物車</Link>
@@ -37,19 +30,26 @@ function MainHeader() {
         </Menu>
     );
 
+    useEffect(() => {
+        if (user === null) {
+            messageApi.open({
+                type: 'success',
+                content: `成功登出`,
+                duration: 1.5,
+                onClose: () => navigate("/"),
+            });
+        }
+    }, [user]);
+
     const userMenu = (
         <Menu>
             <Menu.Item key="logout" >
-                <a onClick={() => { handleLogout() }}>登出會員</a>
+                <a onClick={() => { logout(); }}>
+                    登出會員
+                </a>
             </Menu.Item>
         </Menu>
     );
-
-    const handleLogout = () => {
-        localStorage.removeItem(user);
-        setUser(null);
-        navigate("/")
-    }
 
     const handleSearch = debounce(async (value) => {
         if (!value) {
@@ -79,6 +79,7 @@ function MainHeader() {
 
     return (
         <Layout >
+            {contextHolder}
             <Header className="headerStyle">
                 <Row className="headerRow" justify="space-between" align="middle">
                     {/* Logo */}
@@ -90,7 +91,7 @@ function MainHeader() {
 
                     {/* 桌面版按鈕 */}
                     <Col className="desktopMenu">
-                        <Link to="/jewelry" >
+                        <Link to="/accessories" >
                             <Button type="text" className="productButton">飾品</Button>
                         </Link>
                         <Link to="/perfume" >
@@ -110,7 +111,7 @@ function MainHeader() {
                             }} />
                         </AutoComplete>
                         {!user ? (
-                            < Link to="/signin" className="membericonStyle" >
+                            < Link to="/signin"  >
                                 <Button className="w-full flex gap-2 p-0 text-[#4CAF93]" type="text">
                                     <UserOutlined />
                                     會員登入
@@ -119,7 +120,7 @@ function MainHeader() {
 
                         ) : (
                             <Dropdown overlay={userMenu}>
-                                <Text className="w-full flex gap-2">
+                                    <Text className="flex gap-2 whitespace-nowrap cursor-default">
                                     <UserOutlined />
                                     {user.username}
                                 </Text>
@@ -146,8 +147,24 @@ function MainHeader() {
                                 setOptions([])
                             }} />
                         </AutoComplete>
+                        {!user ? (
+                            < Link to="/signin"  >
+                                <Button className="w-full flex gap-2 p-0 text-[#4CAF93]" type="text">
+                                    <UserOutlined />
+                                    會員登入
+                                </Button>
+                            </Link>
+
+                        ) : (
+                            <Dropdown overlay={userMenu}>
+                                    <Text className="flex gap-2 whitespace-nowrap cursor-default">
+                                    <UserOutlined />
+                                    {user.username}
+                                </Text>
+                            </Dropdown>
+                        )}
                         <Dropdown overlay={mobileMenu} trigger={['click']}>
-                            <Button icon={<MenuOutlined />} />
+                            <Button className="w-full" icon={<MenuOutlined />} />
                         </Dropdown>
                     </Col>
                 </Row>

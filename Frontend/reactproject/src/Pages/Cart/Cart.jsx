@@ -1,52 +1,64 @@
-﻿
-import { useState, useEffect } from 'react';
-import { Avatar,Statistic,Card, Typography, Breadcrumb, Row, Col, InputNumber, Button ,List } from 'antd'
-
-const initialCart = [
-    {
-        id: 1,
-        name: "藍牙耳機",
-        price: 1200,
-        qty: 2,
-        image: "https://picsum.photos/80/80",
-    },
-    {
-        id: 2,
-        name: "無線滑鼠",
-        price: 800,
-        qty: 1,
-        image: "https://picsum.photos/80/80",
-    },
-    {
-        id: 3,
-        name: "機械鍵盤",
-        price: 2500,
-        qty: 1,
-        image: "https://picsum.photos/80/80",
-    },
-];
+﻿import { useState, useEffect } from 'react';
+import { Avatar, Statistic, Card, Typography, Breadcrumb, Row, Col, InputNumber, Button, List } from 'antd'
+import { useUser } from '../../context/UserContext';
 function Cart() {
-    const [cartItems, setCartItems] = useState(initialCart);
+    const { user } = useUser();
+    const [cartItems, setCartItems] = useState([]);
+
+    useEffect(() => {
+        if (!user) return;
+        fetch(`https://localhost:7207/api/Cart/${user.userId}`)
+            .then(res => res.json())
+            .then(data => setCartItems(data));
+    }
+        , [user]);
 
     // 更新數量
     const updateQty = (id, qty) => {
-        setCartItems(items =>
-            items.map(item =>
-                item.id === id ? { ...item, qty } : item
-            )
-        );
+        try {
+            fetch(`https://localhost:7207/api/Cart/update/${id}`,
+                {
+                    method: "PUT",
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        qty: qty
+                    })
+                })
+                .then((res) => res.json())
+                .then(data => {
+                    console.log(data.message);
+                    setCartItems(items =>
+                        items.map(item =>
+                            item.id === id ? { ...item, qty } : item
+                        )
+                    );
+                });
+        }
+        catch (error) {
+            console.error('發生錯誤:', error);
+        }
     };
 
     // 刪除商品
     const removeItem = (id) => {
-        setCartItems(items => items.filter(item => item.id !== id));
+        try {
+            fetch(`https://localhost:7207/api/Cart/remove/${id}`, { method: "DELETE" })
+                .then((res) => res.json())
+                .then(data => {
+                    console.log(data.message);
+                    setCartItems(items => items.filter(item => item.id !== id));
+                });
+        }
+        catch (error) {
+            console.error('發生錯誤:', error);
+        }
     };
 
     // 計算總金額
-    const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.qty, 0);
+    const totalPrice = cartItems.reduce((sum, item) => sum + item.product.price * item.qty, 0);
 
     return (
-        <Row gutter={16} style={{ marginTop: '64px', height: '100vh', width: '100%' ,padding: '32px'} }>
+        <Row gutter={16} style={{ marginTop: '64px', height: '100vh', width: '100%', padding: '32px' }}>
             {/* 左邊：商品清單 */}
             <Col xs={24} md={16}>
                 <Card title="購物車清單">
@@ -67,11 +79,11 @@ function Cart() {
                                 ]}
                             >
                                 <List.Item.Meta
-                                    avatar={<Avatar src={item.image} shape="square" size={64} />}
-                                    title={item.name}
-                                    description={`單價：$${item.price}`}
+                                    avatar={<Avatar src={item.product.image} shape="square" size={64} />}
+                                    title={item.product.name}
+                                    description={`單價：$${item.product.price}`}
                                 />
-                                <div>小計：${item.price * item.qty}</div>
+                                <div>小計：${item.product.price * item.qty}</div>
                             </List.Item>
                         )}
                     />

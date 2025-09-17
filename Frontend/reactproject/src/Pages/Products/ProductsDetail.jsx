@@ -1,6 +1,7 @@
 ﻿import { useParams, Link, } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { Card, Typography, Breadcrumb, Row, Col, InputNumber, Button } from 'antd'
+import { Card, Typography, Breadcrumb, Row, Col, InputNumber, Button, message } from 'antd'
+import { useUser } from '../../context/UserContext';
 
 const { Title } = Typography;
 
@@ -8,15 +9,46 @@ function ProductsDetail() {
     const { categoryId, productId } = useParams();
     const [product, setProduct] = useState(null);
     const [quantity, setQuantity] = useState(1);
+    const { user } = useUser();
+    const [messageApi, contextHolder] = message.useMessage();
 
     useEffect(() => {
         fetch(`https://localhost:7207/api/Products/${categoryId}/${productId}`)
             .then(res => res.json())
             .then(data => setProduct(data));
+
     }
         , [categoryId, productId]);
 
     if (!product) return <div>Loading...</div>;
+    
+    const handleAddToCart = () => {
+        fetch('https://localhost:7207/api/Cart/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                userId: user.userId,
+                productId: product.id,
+                qty: quantity
+            })
+        })
+            .then(async res => {
+                if (!res.ok)
+                    messageApi.open({
+                        type: 'error',
+                        content: '加入購物車失敗',
+                    });
+                else
+                    messageApi.open({
+                    type: 'success',
+                    content: '成功加入購物車',
+                });
+            })
+            .catch(error => {
+                console.error('發生錯誤:', error);
+            });
+    }
+
 
     const categoryNameMap = {
         accessories: '飾品',
@@ -36,6 +68,7 @@ function ProductsDetail() {
     return (
         <>
             {/* Breadcrumb */}
+            {contextHolder}
             < Breadcrumb className='breadCrumb' separator=">" items={breadcrumbItems} />
             <Row style={{
                 backgroundColor: '#F9FAFB',
@@ -103,7 +136,7 @@ function ProductsDetail() {
                                     <Button onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}>+</Button>
                                 </Col>
                                 <Col span={12}>
-                                    <Button >加入購物車</Button>
+                                    <Button onClick={handleAddToCart}>加入購物車</Button>
                                 </Col>
                             </Row>
                         </Col>

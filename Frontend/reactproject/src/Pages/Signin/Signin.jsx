@@ -1,6 +1,7 @@
 ﻿import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Typography, Button, Form, Input, message } from 'antd'
+import { useUser } from '../../context/UserContext';
 
 const { Title } = Typography;
 
@@ -10,6 +11,7 @@ function Signin() {
     const [form] = Form.useForm();
     const [messageApi, contextHolder] = message.useMessage();
     const navigate = useNavigate();
+    const { login } = useUser();
 
 
     const onLoginFinish = async (values) => {
@@ -31,9 +33,7 @@ function Signin() {
 
             const data = await res.json();
 
-            localStorage.setItem("user", JSON.stringify({
-                username: data.username,
-            }));
+            login(data.username, data.userId);
 
             messageApi.open({
                 type: 'success',

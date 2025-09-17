@@ -16,9 +16,11 @@ namespace WebAPI.Models
     public class Cart
     {
         public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string Account { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
+        public int UserId { get; set; } 
+        public int ProductId { get; set; }
+        public int Qty { get; set; }
+        public Products? Product { get; set; } 
+
     }
     public class Users
     {

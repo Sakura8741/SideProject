@@ -49,7 +49,7 @@ public class UsersController : ControllerBase
         if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.Password))
             return BadRequest(new { message = "帳號或密碼錯誤" });
 
-        return Ok(new { message = "登入成功", username = user.Name });
+        return Ok(new { message = "登入成功", userId = user.Id , username = user.Name });
     }
 }
 
