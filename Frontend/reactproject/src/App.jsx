@@ -6,6 +6,7 @@ import Products from './Pages/Products/Products';
 import ProductsDetail from './Pages/Products/ProductsDetail';
 import Signin from './Pages/Signin/Signin';
 import Cart from './Pages/Cart/Cart';
+import ProductManagement from './Pages/ProductManagement/ProductManagement';
 import { UserProvider } from './context/UserContext';
 import { Layout } from 'antd';
 const { Footer } = Layout;
@@ -21,6 +22,7 @@ const App = () => {
                     <Route path=":categoryId" element={<Products />} />
                     <Route path=":categoryId/:productId" element={<ProductsDetail />} />
                     <Route path="/cart" element={<Cart />} />
+                    <Route path="/productManagement" element={<ProductManagement />} />"
                 </Routes>
                 <Footer className='footerStyle'>
                     copyright © 2025 SideProject

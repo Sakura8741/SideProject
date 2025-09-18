@@ -28,6 +28,7 @@ namespace WebAPI.Models
         public string Name { get; set; } = string.Empty;
         public string Account { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
+        public string Role { get; set; } = "User"; 
     }
     public class UserRegisterDto
     {
@@ -46,11 +47,5 @@ namespace WebAPI.Models
         public string Account { get; set; }
         [Required]
         public string Password { get; set; }
-    }
-
-    public class UserDto
-    {
-        public int Id { get; set; }
-        public string Username { get; set; }
     }
 }

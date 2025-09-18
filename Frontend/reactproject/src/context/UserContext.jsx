@@ -12,14 +12,15 @@ export const UserProvider = ({ children }) => {
     },[])
 
     // 登入
-    const login = (userName , userId) => {
+    const login = (userName , userId , role , token) => {
         setUser({
             username: userName,
             userId: userId,
+            role: role,
         });
         localStorage.setItem("user", JSON.stringify({
-            username: userName,
             userId: userId,
+            token: token,
         }));
     };
     

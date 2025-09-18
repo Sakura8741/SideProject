@@ -18,10 +18,11 @@ function Signin() {
         try {
             const res = await fetch('https://localhost:7207/api/Users/login', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                },
                 body: JSON.stringify({ account: values.account, password: values.password })
             });
-
             if (!res.ok) {
                 const errorData = await res.json();
                 messageApi.open({
@@ -31,13 +32,16 @@ function Signin() {
                 return;
             }
 
-            const data = await res.json();
-
-            login(data.username, data.userId);
+            const token = await res.json();
+            
+            const payloadBase64 = token.token.split('.')[1];
+            const payloadJson = atob(payloadBase64.replace(/-/g, '+').replace(/_/g, '/'));
+            const payload = JSON.parse(payloadJson);
+            login(payload.username, payload.userId, payload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"], token.token);
 
             messageApi.open({
                 type: 'success',
-                content: `登入成功，歡迎回來${data.username}`,
+                content: `登入成功，歡迎回來${payload.username}`,
                 duration: 1.5,
                 onClose: () => navigate("/"),
             });

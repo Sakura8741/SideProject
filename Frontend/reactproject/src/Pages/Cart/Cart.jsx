@@ -7,9 +7,22 @@ function Cart() {
 
     useEffect(() => {
         if (!user) return;
-        fetch(`https://localhost:7207/api/Cart/${user.userId}`)
-            .then(res => res.json())
-            .then(data => setCartItems(data));
+        fetch(`https://localhost:7207/api/Cart/${user.userId}`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem("user")).token}`
+            }
+        })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+                return res.json();
+            })
+            .then(data => {
+                setCartItems(data);
+            })
+            .catch(err => console.error("Fetch error:", err));
     }
         , [user]);
 
@@ -19,7 +32,10 @@ function Cart() {
             fetch(`https://localhost:7207/api/Cart/update/${id}`,
                 {
                     method: "PUT",
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${JSON.parse(localStorage.getItem("user")).token}`
+                    },
                     body: JSON.stringify({
                         qty: qty
                     })
@@ -42,7 +58,13 @@ function Cart() {
     // 刪除商品
     const removeItem = (id) => {
         try {
-            fetch(`https://localhost:7207/api/Cart/remove/${id}`, { method: "DELETE" })
+            fetch(`https://localhost:7207/api/Cart/remove/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${JSON.parse(localStorage.getItem("user")).token}`
+                }
+            })
                 .then((res) => res.json())
                 .then(data => {
                     console.log(data.message);
@@ -70,6 +92,7 @@ function Cart() {
                                 actions={[
                                     <InputNumber
                                         min={1}
+                                        max={item.product.stock}
                                         value={item.qty}
                                         onChange={value => updateQty(item.id, value)}
                                     />,

@@ -43,6 +43,13 @@ function MainHeader() {
 
     const userMenu = (
         <Menu>
+            {user?.role === "Admin" && ( 
+                <Menu.Item key="Admin" >
+                    <a onClick={() => { navigate("/productManagement") }}>
+                        商品管理
+                    </a>
+                </Menu.Item>
+            )}
             <Menu.Item key="logout" >
                 <a onClick={() => { logout(); }}>
                     登出會員

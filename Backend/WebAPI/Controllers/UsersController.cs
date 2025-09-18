@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WebAPI.Models;
-using BCrypt.Net;
 using Microsoft.EntityFrameworkCore;
+using WebAPI.Models;
+using WebAPI.Services;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -39,17 +39,23 @@ public class UsersController : ControllerBase
 
     [HttpPost("login")]
 
-    public async Task<IActionResult> Login([FromBody] UserLoginDto dto)
+    public async Task<IActionResult> Login([FromBody] UserLoginDto dto, [FromServices] JwtService jwtService)
     {
-        var user = await _context.Users.SingleOrDefaultAsync(u => u.Account == dto.Account);
-        
-        if (user == null )
-            return BadRequest(new { message = "使用者不存在" });
+        try
+        {
+            var user = await _context.Users.SingleOrDefaultAsync(u => u.Account == dto.Account);
+            if (user == null)
+                return Unauthorized(new { message = "使用者不存在" });
 
-        if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.Password))
-            return BadRequest(new { message = "帳號或密碼錯誤" });
+            if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.Password))
+                return Unauthorized(new { message = "帳號或密碼錯誤" });
 
-        return Ok(new { message = "登入成功", userId = user.Id , username = user.Name });
+            var token = jwtService.GenerateToken(user.Id, user.Name, user.Role);
+            return Ok(new { token });
+        }catch(Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 }
 

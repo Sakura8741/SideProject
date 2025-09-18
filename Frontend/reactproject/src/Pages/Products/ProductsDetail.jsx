@@ -25,7 +25,10 @@ function ProductsDetail() {
     const handleAddToCart = () => {
         fetch('https://localhost:7207/api/Cart/add', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem("user")).token}`
+            },
             body: JSON.stringify({
                 userId: user.userId,
                 productId: product.id,
