@@ -76,4 +76,8 @@
     .card.reverse .card-image {
         clip-path: none;
     }
+
+    .card.reverse .card-content {
+        align-items: flex-start;
+    }
 }

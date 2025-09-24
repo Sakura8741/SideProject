@@ -6,7 +6,7 @@ import { useUser } from '../../context/UserContext';
 const { Title } = Typography;
 
 
-function Signin() {
+function Login() {
     const [isLogin, setIsLogin] = useState(true);
     const [form] = Form.useForm();
     const [messageApi, contextHolder] = message.useMessage();
@@ -218,4 +218,4 @@ function Signin() {
     );
 };
 
-export default Signin;
+export default Login;

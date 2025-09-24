@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Card, Typography, Breadcrumb, Row, Col, InputNumber, Button, message } from 'antd'
 import { useUser } from '../../context/UserContext';
-
+import { useRequireLogin } from "../../hooks/useRequireLogin";
 const { Title } = Typography;
 
 function ProductsDetail() {
@@ -11,45 +11,47 @@ function ProductsDetail() {
     const [quantity, setQuantity] = useState(1);
     const { user } = useUser();
     const [messageApi, contextHolder] = message.useMessage();
+    const { checkLogin, LoginModal } = useRequireLogin();
 
     useEffect(() => {
         fetch(`https://localhost:7207/api/Products/${categoryId}/${productId}`)
             .then(res => res.json())
             .then(data => setProduct(data));
-
     }
         , [categoryId, productId]);
 
-    if (!product) return <div>Loading...</div>;
-    
+    if (!product) return null;
+
     const handleAddToCart = () => {
-        fetch('https://localhost:7207/api/Cart/add', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${JSON.parse(localStorage.getItem("user")).token}`
-            },
-            body: JSON.stringify({
-                userId: user.userId,
-                productId: product.id,
-                qty: quantity
+        checkLogin(() => {
+            fetch('https://localhost:7207/api/Cart/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${JSON.parse(localStorage.getItem("user")).token}`
+                },
+                body: JSON.stringify({
+                    userId: user.userId,
+                    productId: product.id,
+                    qty: quantity
+                })
             })
-        })
-            .then(async res => {
-                if (!res.ok)
-                    messageApi.open({
-                        type: 'error',
-                        content: '加入購物車失敗',
-                    });
-                else
-                    messageApi.open({
-                    type: 'success',
-                    content: '成功加入購物車',
+                .then(async res => {
+                    if (!res.ok)
+                        messageApi.open({
+                            type: 'error',
+                            content: '加入購物車失敗',
+                        });
+                    else
+                        messageApi.open({
+                            type: 'success',
+                            content: '成功加入購物車',
+                        });
+                })
+                .catch(error => {
+                    console.error('發生錯誤:', error);
                 });
-            })
-            .catch(error => {
-                console.error('發生錯誤:', error);
-            });
+        });
     }
 
 
@@ -72,6 +74,7 @@ function ProductsDetail() {
         <>
             {/* Breadcrumb */}
             {contextHolder}
+            {LoginModal}
             < Breadcrumb className='breadCrumb' separator=">" items={breadcrumbItems} />
             <Row style={{
                 backgroundColor: '#F9FAFB',

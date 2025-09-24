@@ -26,6 +26,8 @@ function Products() {
             });
     }, [categoryId, page]);
 
+    if (!products) return null;
+
     const categoryNameMap = {
         accessories: '飾品',
         perfume: '香水',

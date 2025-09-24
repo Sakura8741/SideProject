@@ -26,7 +26,10 @@ function DiagonalCard({ img, title, text, link, reverse }) {
                         alignItems: 'center',   // 垂直置中
                     }}
                 >
-                    <div className={`card-content ${reverse ? 'reverse' : ''}`}>
+                    <div className={`card-content ${reverse ? 'reverse' : ''}`} style={{
+                        textAlign: 'left',  // 文字靠左
+                        whiteSpace: 'normal' // 允許換行
+                    }}>
                         <Title level={2}>{title}</Title>
                         <p>{text}</p>
                         <Link to={link} className="card-link">查看詳情</Link>

@@ -17,7 +17,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowLocalhost",
         policy =>
         {
-            policy.WithOrigins("http://localhost:3000", "http://localhost:63421") // 你的前端網址
+            policy.WithOrigins("http://localhost:3000", "http://localhost:63421" , "https://dd414c557a6f.ngrok-free.app") // 你的前端網址
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
@@ -44,7 +44,6 @@ builder.Services.AddAuthentication("Bearer")
     });
 builder.Services.AddScoped<JwtService>();
 
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -55,7 +54,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseCors("AllowLocalhost");
 app.UseAuthentication();
 app.UseAuthorization();

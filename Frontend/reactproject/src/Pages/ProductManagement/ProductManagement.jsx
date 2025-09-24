@@ -25,6 +25,8 @@ const ProductManagement = () => {
             });
     }, [page]);
 
+    if (!products) return null;
+
     useEffect(() => {
         if (editingProduct) {
             form.setFieldsValue(editingProduct);

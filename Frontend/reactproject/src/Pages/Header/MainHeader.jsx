@@ -2,19 +2,26 @@
 import { UserOutlined, ShoppingCartOutlined, MenuOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { useUser } from './context/UserContext';
+import { useUser } from '../../context/UserContext';
+import { useRequireLogin } from "../../hooks/useRequireLogin";
 import './MainHeader.css';
 import debounce from "lodash.debounce";
 
 const { Search } = Input;
 const { Header } = Layout;
 const { Text } = Typography;
-
 function MainHeader() {
     const [options, setOptions] = useState([]);
     const navigate = useNavigate();
     const { user, logout } = useUser();
     const [messageApi, contextHolder] = message.useMessage();
+    const { checkLogin, LoginModal } = useRequireLogin();
+
+    const handleCartClick = () => {
+        checkLogin(() => {
+            navigate("/cart");
+        });
+    }
     // 手機版選單
     const mobileMenu = (
         <Menu>
@@ -25,21 +32,22 @@ function MainHeader() {
                 <Link to="/perfume">香水</Link>
             </Menu.Item>
             <Menu.Item key="cart">
-                <Link to="/cart">購物車</Link>
+                <div onClick={handleCartClick}>
+                    購物車
+                </div>
             </Menu.Item>
         </Menu>
     );
 
-    useEffect(() => {
-        if (user === null) {
-            messageApi.open({
-                type: 'success',
-                content: `成功登出`,
-                duration: 1.5,
-                onClose: () => navigate("/"),
-            });
-        }
-    }, [user]);
+    const handleLogout = () => {
+        logout();
+        messageApi.open({
+            type: 'success',
+            content: '已成功登出',
+            duration: 1.5,
+            onClose: () => navigate("/"),
+        });
+    }
 
     const userMenu = (
         <Menu>
@@ -51,7 +59,7 @@ function MainHeader() {
                 </Menu.Item>
             )}
             <Menu.Item key="logout" >
-                <a onClick={() => { logout(); }}>
+                <a onClick={() => { handleLogout(); }}>
                     登出會員
                 </a>
             </Menu.Item>
@@ -84,8 +92,11 @@ function MainHeader() {
         setOptions([]);
     }
 
+    
+
     return (
         <Layout >
+            {LoginModal}
             {contextHolder}
             <Header className="headerStyle">
                 <Row className="headerRow" justify="space-between" align="middle">
@@ -118,7 +129,7 @@ function MainHeader() {
                             }} />
                         </AutoComplete>
                         {!user ? (
-                            < Link to="/signin"  >
+                            < Link to="/login"  >
                                 <Button className="w-full flex gap-2 p-0 text-[#4CAF93]" type="text">
                                     <UserOutlined />
                                     會員登入
@@ -134,9 +145,9 @@ function MainHeader() {
                             </Dropdown>
                         )}
 
-                        <Link to="/cart" className="carticonStyle">
+                        <div onClick={handleCartClick} className="carticonStyle">
                             <ShoppingCartOutlined />
-                        </Link>
+                        </div>
                     </Col>
 
                     {/* 手機版折疊選單 */}
@@ -155,7 +166,7 @@ function MainHeader() {
                             }} />
                         </AutoComplete>
                         {!user ? (
-                            < Link to="/signin"  >
+                            < Link to="/login"  >
                                 <Button className="w-full flex gap-2 p-0 text-[#4CAF93]" type="text">
                                     <UserOutlined />
                                     會員登入

@@ -28,12 +28,12 @@
 .searchStyle {
     width: 100%;
     min-width: 100px;
+    max-width: 200px;
 }
 
 .logoStyle {
     display: flex;
     align-items: center;
-    padding: 0 10px;
 }
 .headerRow .ant-typography {
     color: #4CAF93;

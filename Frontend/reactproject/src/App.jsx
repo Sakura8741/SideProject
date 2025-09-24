@@ -1,10 +1,10 @@
 ﻿import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import MainHeader from './MainHeader';
+import MainHeader from './Pages/Header/MainHeader';
 import Mainpage from './Pages/Mainpage/Mainpage';
 import Products from './Pages/Products/Products';
 import ProductsDetail from './Pages/Products/ProductsDetail';
-import Signin from './Pages/Signin/Signin';
+import Login from './Pages/Login/Login';
 import Cart from './Pages/Cart/Cart';
 import ProductManagement from './Pages/ProductManagement/ProductManagement';
 import { UserProvider } from './context/UserContext';
@@ -18,7 +18,7 @@ const App = () => {
                 <MainHeader />
                 <Routes >
                     <Route path="/" element={<Mainpage />} />
-                    <Route path="/signin" element={<Signin />} />
+                    <Route path="/login" element={<Login />} />
                     <Route path=":categoryId" element={<Products />} />
                     <Route path=":categoryId/:productId" element={<ProductsDetail />} />
                     <Route path="/cart" element={<Cart />} />

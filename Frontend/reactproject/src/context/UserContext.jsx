@@ -1,15 +1,19 @@
-﻿import { useEffect,createContext, useContext, useState } from 'react';
+﻿import { useEffect, createContext, useContext, useState } from 'react';
 // 建立 UserContext
 export const UserContext = createContext(null);
 
 // 提供者元件
 export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const storedUser = localStorage.getItem("user");
         if (storedUser) setUser(JSON.parse(storedUser));
+        setLoading(false);
     },[])
+
+    if (loading) return null;
 
     // 登入
     const login = (userName , userId , role , token) => {
@@ -19,6 +23,7 @@ export const UserProvider = ({ children }) => {
             role: role,
         });
         localStorage.setItem("user", JSON.stringify({
+            username: userName,
             userId: userId,
             token: token,
         }));

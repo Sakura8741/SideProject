@@ -18,6 +18,5 @@
   <ItemGroup>
     <Folder Include="src\Pages\Cart\" />
     <Folder Include="src\Pages\ProductManagement\" />
-    <Folder Include="src\Pages\Signin\" />
   </ItemGroup>
 </Project>

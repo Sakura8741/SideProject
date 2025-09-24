@@ -26,6 +26,7 @@ function Cart() {
     }
         , [user]);
 
+    if (!cartItems) return null;
     // 更新數量
     const updateQty = (id, qty) => {
         try {
