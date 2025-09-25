@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+﻿import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Typography, Button, Form, Input, message } from 'antd'
 import { useUser } from '../../context/UserContext';
@@ -13,7 +13,7 @@ function Login() {
     const navigate = useNavigate();
     const { login } = useUser();
 
-
+    /* 登入 */
     const onLoginFinish = async (values) => {
         try {
             const res = await fetch('https://localhost:7207/api/Users/login', {
@@ -54,6 +54,8 @@ function Login() {
             });
         }
     };
+
+    /* 註冊 */ 
     const onRegisterFinish = async (values) => {
         try {
             const res = await fetch('https://localhost:7207/api/Users/register', {
@@ -95,31 +97,21 @@ function Login() {
 
 
     return (
-        /*頁面外框*/
-        <div style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            height: "100vh",
-            background: "#f5f5f5"
-        }}>
+        /* 頁面外框 */
+        <div className="flex flex-col items-center justify-center h-screen bg-[#f5f5f5]">
+            {contextHolder}
 
-            {/*內容外框*/}
-            <div style={{
-                width: 350,
-                padding: 24,
-                background: "#fff",
-                borderRadius: 12,
-                boxShadow: "0 4px 12px rgba(0,0,0,0.1)"
-            }}>
-                {/*註冊/登入內容*/}
+            {/* 內容外框 */}
+            <div className="w-[350px] p-[24px] bg-white rounded-lg shadow-md">
+
+                {/* 註冊/登入內容 */}
                 <Title level={3} style={{ textAlign: "center" }}>
                     {isLogin ? "登入" : "註冊"}
                 </Title>
-                {contextHolder}
+                
                 {isLogin ? (
-                    /*登入*/
+
+                    /* 登入 */
                     <Form layout="vertical" onFinish={onLoginFinish} form={form}>
                         <Form.Item
                             name="account"
@@ -146,7 +138,8 @@ function Login() {
                         </div>
                     </Form>
                 ) : (
-                    /*註冊*/
+
+                    /* 註冊 */
                     <Form layout="vertical" onFinish={onRegisterFinish} form={form}>
                         <Form.Item
                             name="username"

@@ -24,7 +24,7 @@ const App = () => {
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/productManagement" element={<ProductManagement />} />"
                 </Routes>
-                <Footer className='footerStyle'>
+                <Footer className='px-[10px] py-[2px] text-left bg-[#F9FAFB] w-full border-t border-[#c4c4c4]'>
                     copyright © 2025 SideProject
                 </Footer>
             </BrowserRouter>

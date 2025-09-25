@@ -1,16 +1,4 @@
-﻿.siderStyle {
-    text-align: center;
-    background-color: #ffffff;
-    flex-direction: row;
-    height: 100vh;
-}
-.menuStyle {
-    padding: 10px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-}
-.ant-menu-item {
+﻿.ant-menu-item {
     padding: 0px !important;
 }
 .breadCrumb {
@@ -21,15 +9,4 @@
 .productslayoutStyle {
     min-height: 100vh;
     background-color: #F9FAFB;
-}
-.card-fixed {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100%; /* 保持每個 Card 等高 */
-}
-.cardStyle {
-    padding: 20px;
-    display: flex;
-    column-count: 3
 }

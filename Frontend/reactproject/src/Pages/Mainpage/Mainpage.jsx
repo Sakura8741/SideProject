@@ -1,10 +1,11 @@
 ﻿import { Layout } from 'antd';
-const { Content } = Layout;
 import DiagonalCard from './DiagonalCard';
+const { Content } = Layout;
 function Mainpage() {
     return (
 
-        <Content style={{ paddingTop: '64px' }}>
+       /* 主頁面 */
+        <Content className="pt-[64px]">
             <DiagonalCard
                 img="/images/mainpage/accessories.jpg"
                 title="飾品"

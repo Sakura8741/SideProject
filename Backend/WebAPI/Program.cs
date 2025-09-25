@@ -7,11 +7,11 @@ using WebAPI.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowLocalhost",
@@ -22,12 +22,16 @@ builder.Services.AddCors(options =>
                   .AllowAnyMethod();
         });
 });
+
+// Database
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
         ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
     )
 );
+
+// JWT Authentication
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer(options =>
     {
@@ -42,8 +46,10 @@ builder.Services.AddAuthentication("Bearer")
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
         };
     });
+
 builder.Services.AddScoped<JwtService>();
 
+// Build the app
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

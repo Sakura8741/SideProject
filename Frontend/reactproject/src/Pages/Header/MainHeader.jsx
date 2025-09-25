@@ -1,7 +1,7 @@
 ﻿import { Layout, Button, Input, Typography, Row, Col, Dropdown, Menu, AutoComplete, message } from 'antd';
 import { UserOutlined, ShoppingCartOutlined, MenuOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState} from 'react';
 import { useUser } from '../../context/UserContext';
 import { useRequireLogin } from "../../hooks/useRequireLogin";
 import './MainHeader.css';
@@ -17,12 +17,14 @@ function MainHeader() {
     const [messageApi, contextHolder] = message.useMessage();
     const { checkLogin, LoginModal } = useRequireLogin();
 
+    /* 前往購物車頁面，若未登入則跳出登入視窗 */
     const handleCartClick = () => {
         checkLogin(() => {
             navigate("/cart");
         });
     }
-    // 手機版選單
+
+    /* 手機版選單 */
     const mobileMenu = (
         <Menu>
             <Menu.Item key="accessories">
@@ -39,6 +41,7 @@ function MainHeader() {
         </Menu>
     );
 
+    /* 登出並跳轉首頁 */
     const handleLogout = () => {
         logout();
         messageApi.open({
@@ -49,6 +52,7 @@ function MainHeader() {
         });
     }
 
+    /* 會員選單 */
     const userMenu = (
         <Menu>
             {user?.role === "Admin" && ( 
@@ -66,6 +70,7 @@ function MainHeader() {
         </Menu>
     );
 
+    /* 搜尋功能 */
     const handleSearch = debounce(async (value) => {
         if (!value) {
             setOptions([]);
@@ -75,40 +80,42 @@ function MainHeader() {
         try {
             const res = await fetch(`https://localhost:7207/api/Products/search?keyword=${value}`);
             const data = await res.json();
+            if (!res.ok) throw new Error(data.message || "搜尋失敗");
             setOptions(data.map(item => ({
                 value: item.value,
                 productId: item.id,
                 category: item.category,
             })));
-
         }
         catch (error) {
             console.error("搜尋失敗", error);
         }
     }, 500);
 
+    /* 點擊搜尋結果 */
     const handleSelect = (value, option) => {
         navigate(`${option.category}/${option.productId}`);
         setOptions([]);
     }
 
-    
-
     return (
         <Layout >
             {LoginModal}
             {contextHolder}
-            <Header className="headerStyle">
-                <Row className="headerRow" justify="space-between" align="middle">
+
+            {/* Header */}
+            <Header className="w-full p-0 bg-[#F9FAFB] border-b border-[#c4c4c4] fixed z-[1000] top-0 left-0 opacity-95">
+                <Row className="h-[64px] flex item-center" justify="space-between" align="middle">
+
                     {/* Logo */}
-                    <Col>
-                        <Link to="/" className="logoStyle">
+                    <Col className="h-full">
+                        <Link to="/" className="flex items-center justify-center h-full">
                             <Button type="text" className="productButton">首頁</Button>
                         </Link>
                     </Col>
 
                     {/* 桌面版按鈕 */}
-                    <Col className="desktopMenu">
+                    <Col className="hidden md:flex items-center gap-[8px]">
                         <Link to="/accessories" >
                             <Button type="text" className="productButton">飾品</Button>
                         </Link>
@@ -138,20 +145,20 @@ function MainHeader() {
 
                         ) : (
                             <Dropdown overlay={userMenu}>
-                                    <Text className="flex gap-2 whitespace-nowrap cursor-default">
+                                <Text className="productButton">
                                     <UserOutlined />
                                     {user.username}
                                 </Text>
                             </Dropdown>
                         )}
 
-                        <div onClick={handleCartClick} className="carticonStyle">
+                        <div onClick={handleCartClick} className="mx-[10px] text-[#4CAF93] hover:text-[#3BAFDA]">
                             <ShoppingCartOutlined />
                         </div>
                     </Col>
 
                     {/* 手機版折疊選單 */}
-                    <Col className="mobileMenu">
+                    <Col className="absolute right-0 top-0 flex justify-end items-center h-[64px] gap-[8px] md:hidden">
                         <AutoComplete
                             options={options}
                             onSearch={handleSearch}

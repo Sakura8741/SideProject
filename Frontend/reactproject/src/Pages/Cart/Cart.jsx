@@ -5,6 +5,7 @@ function Cart() {
     const { user } = useUser();
     const [cartItems, setCartItems] = useState([]);
 
+    /* 取得購物車資料 */
     useEffect(() => {
         if (!user) return;
         fetch(`https://localhost:7207/api/Cart/${user.userId}`, {
@@ -26,8 +27,10 @@ function Cart() {
     }
         , [user]);
 
+
     if (!cartItems) return null;
-    // 更新數量
+
+    /* 更新數量 */
     const updateQty = (id, qty) => {
         try {
             fetch(`https://localhost:7207/api/Cart/update/${id}`,
@@ -56,7 +59,7 @@ function Cart() {
         }
     };
 
-    // 刪除商品
+    /* 刪除商品 */
     const removeItem = (id) => {
         try {
             fetch(`https://localhost:7207/api/Cart/remove/${id}`, {
@@ -77,11 +80,12 @@ function Cart() {
         }
     };
 
-    // 計算總金額
+    /* 計算總金額 */
     const totalPrice = cartItems.reduce((sum, item) => sum + item.product.price * item.qty, 0);
 
     return (
-        <Row gutter={16} style={{ marginTop: '64px', height: '100vh', width: '100%', padding: '32px' }}>
+        <Row gutter={16} className="mt-[64px] h-screen w-full p-[32px]">
+
             {/* 左邊：商品清單 */}
             <Col xs={24} md={16}>
                 <Card title="購物車清單">

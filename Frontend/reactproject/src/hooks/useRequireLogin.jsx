@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 export function useRequireLogin() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
+
+    /* 檢查登入狀態，未登入則顯示提示框，已登入則執行callback */
     const checkLogin = (callback) => {
         const user = JSON.parse(localStorage.getItem("user"));
         if (!user) {
@@ -15,6 +17,7 @@ export function useRequireLogin() {
         }
     };
 
+    /* 登入提示框 */
     const LoginModal = (
         <Modal
             title="需要登入"

@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { Table, Button, Modal, Form, Input, Select, message } from "antd";
 
 const ProductManagement = () => {
@@ -9,7 +9,8 @@ const ProductManagement = () => {
     const [form] = Form.useForm();
     const [page, setPage] = useState(1);
     const [total, setTotal] = useState(0);
-    // 讀取商品列表
+
+    /* 讀取商品列表 */
     useEffect(() => {
         fetch(`https://localhost:7207/api/Products/management/list?page=${page}&pageSize=9`, {
             method: "GET",
@@ -27,6 +28,7 @@ const ProductManagement = () => {
 
     if (!products) return null;
 
+    /* 表單填入資料 */
     useEffect(() => {
         if (editingProduct) {
             form.setFieldsValue(editingProduct);
@@ -34,8 +36,8 @@ const ProductManagement = () => {
             form.resetFields();
         }
     }, [editingProduct]);
-
-    // 刪除商品
+    
+    /* 刪除商品 */
     const deleteProduct = async (id) => {
         try {
             console.log(id);
@@ -63,10 +65,11 @@ const ProductManagement = () => {
         }
     };
 
-    // 新增/編輯商品
+    /* 新增/編輯商品 */
     const handleOk = async (values) => {
         if (editingProduct) {
-            // 更新
+
+            /* 更新 */
             try {
                 const res = await fetch(`https://localhost:7207/api/Products/management/update`, {
                     method: "PUT",
@@ -95,7 +98,8 @@ const ProductManagement = () => {
                 });
             }
         } else {
-            // 新增
+
+            /* 新增 */
             delete values.id;
             try {
                 const res = await fetch("https://localhost:7207/api/Products/management/add", {
@@ -125,6 +129,7 @@ const ProductManagement = () => {
         }
     };
 
+    /* 表格欄位 */
     const columns = [
         {
             title: "圖片",
@@ -148,6 +153,8 @@ const ProductManagement = () => {
     return (
         <>
             {contextHolder}
+
+            {/* 商品表格 */} 
             <Table
                 className="mt-[64px]"
                 dataSource={products}
@@ -160,6 +167,8 @@ const ProductManagement = () => {
                     onChange: (page) => setPage(page),
                 }}
             />
+
+            {/* 新增/編輯 商品 Modal */ }
             <Button type="primary" onClick={() => { setEditingProduct(null); setIsModalVisible(true); }}>
                 新增商品
             </Button>

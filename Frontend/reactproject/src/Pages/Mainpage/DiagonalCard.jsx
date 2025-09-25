@@ -1,12 +1,15 @@
 ﻿import { Row, Col, Typography } from 'antd';
 import { Link } from 'react-router-dom';
-import './DiagonalCard.css'; // 你原本的樣式（clip-path 可以保留）
+import './DiagonalCard.css';
 
 const { Title } = Typography;
 function DiagonalCard({ img, title, text, link, reverse }) {
     return (
+
+        /* 整體卡片容器 */
         <div className={`card ${reverse ? 'reverse' : ''}`} >
             <Row>
+
                 {/* 圖片區塊 */}
                 <Col
                     xs={{ span: 24, order: 1 }}                // 手機：圖片在上
@@ -21,15 +24,9 @@ function DiagonalCard({ img, title, text, link, reverse }) {
                 <Col
                     xs={{ span: 24, order: 2 }}                // 手機：文字在下
                     md={{ span: 12, order: reverse ? 1 : 2 }}  // 桌面：依 reverse 交換
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',   // 垂直置中
-                    }}
+                    className="flex items-center"
                 >
-                    <div className={`card-content ${reverse ? 'reverse' : ''}`} style={{
-                        textAlign: 'left',  // 文字靠左
-                        whiteSpace: 'normal' // 允許換行
-                    }}>
+                    <div className={`card-content ${reverse ? 'reverse' : ''}`} >
                         <Title level={2}>{title}</Title>
                         <p>{text}</p>
                         <Link to={link} className="card-link">查看詳情</Link>
